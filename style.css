@@ -555,7 +555,13 @@ header p {
     box-shadow: 0 0 0 2px rgba(36, 41, 46, 0.1);
 }
 
-.upload-gist-btn, .download-gist-btn {
+.upload-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.upload-gist-btn, .update-gist-btn, .download-gist-btn {
     background: linear-gradient(135deg, #24292e, #1a1e22);
     color: white;
     border: none;
@@ -564,11 +570,20 @@ header p {
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s ease;
+    flex: 1;
 }
 
-.upload-gist-btn:hover, .download-gist-btn:hover {
+.upload-gist-btn:hover, .update-gist-btn:hover, .download-gist-btn:hover {
     background: linear-gradient(135deg, #1a1e22, #24292e);
     transform: translateY(-1px);
+}
+
+.update-gist-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.update-gist-btn:hover {
+    background: linear-gradient(135deg, #20c997, #28a745);
 }
 
 .gist-result, .download-result {

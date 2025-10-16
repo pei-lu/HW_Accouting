@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品销售系统</title>
+    <title>Product Sales System</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 密码验证模态框 -->
+    <!-- Password Verification Modal -->
     <div id="passwordModal" class="password-modal">
         <div class="password-modal-content">
             <div class="password-header">
-                <h2>🔐 系统访问验证</h2>
-                <p>请输入访问密码以使用商品销售系统</p>
+                <h2>🔐 System Access Verification</h2>
+                <p>Please enter the access password to use the product sales system</p>
             </div>
             <div class="password-form">
-                <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off">
-                <button id="loginBtn" class="login-btn">登录</button>
+                <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
+                <button id="loginBtn" class="login-btn">Login</button>
                 <div id="errorMessage" class="error-message"></div>
             </div>
         </div>
@@ -24,17 +24,17 @@
 
     <div class="container" id="mainContainer" style="display: none;">
         <header>
-            <h1>商品销售系统</h1>
-            <p>选择商品并完成销售记录</p>
+            <h1>Product Sales System</h1>
+            <p>Select products and complete sales records</p>
             <div class="login-info">
-                <span id="loginStatus" class="login-status">已登录</span>
-                <button id="logoutBtn" class="logout-btn">退出登录</button>
+                <span id="loginStatus" class="login-status">Logged In</span>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
             </div>
         </header>
 
         <main>
             <div class="products-section">
-                <h2>商品列表</h2>
+                <h2>Product List</h2>
                 <div class="products-grid">
                     <button class="product-btn" data-product="Laser Badge" data-paypal-price="6" data-cash-price="5">
                         <h3>Laser Badge</h3>
@@ -100,56 +100,59 @@
 
             <!-- 销售记录显示 -->
             <div class="sales-section">
-                <h2>今日销售记录</h2>
+                <h2>Today's Sales Records</h2>
                 <div id="salesDisplay" class="sales-display">
-                    <!-- 销售记录将在这里显示 -->
+                    <!-- Sales records will be displayed here -->
                 </div>
                 <div class="action-buttons">
-                    <button id="exportBtn" class="export-btn">导出CSV</button>
-                    <button id="syncBtn" class="sync-btn">GitHub同步</button>
-                    <button id="resetBtn" class="reset-btn">重置数据</button>
-                    <button id="testBtn" class="test-btn">测试数据</button>
+                    <button id="exportBtn" class="export-btn">Export CSV</button>
+                    <button id="syncBtn" class="sync-btn">GitHub Sync</button>
+                    <button id="resetBtn" class="reset-btn">Reset Data</button>
                 </div>
                 
-                <!-- GitHub Gist同步模态框 -->
+                <!-- GitHub Gist Sync Modal -->
                 <div id="syncModal" class="sync-modal">
                     <div class="sync-modal-content">
                         <span class="sync-close">&times;</span>
-                        <h2>🔄 GitHub Gist 数据同步</h2>
+                        <h2>🔄 GitHub Gist Data Sync</h2>
                         <div class="sync-options">
                             <div class="sync-option">
-                                <h3>📤 上传数据到Gist</h3>
-                                <p>将当前销售数据上传到GitHub Gist，生成分享链接</p>
+                                <h3>📤 Upload Data to Gist</h3>
+                                <p>Upload current sales data to GitHub Gist and generate share link</p>
                                 <div class="gist-config">
                                     <input type="text" id="gistToken" placeholder="GitHub Personal Access Token" class="gist-input">
-                                    <input type="text" id="gistDescription" placeholder="Gist描述 (可选)" class="gist-input">
+                                    <input type="text" id="gistDescription" placeholder="Gist Description (Optional)" class="gist-input">
+                                    <input type="text" id="existingGistId" placeholder="Existing Gist ID (Update mode, leave empty to create new)" class="gist-input">
                                 </div>
-                                <button id="uploadToGistBtn" class="upload-gist-btn">上传到Gist</button>
+                                <div class="upload-options">
+                                    <button id="uploadToGistBtn" class="upload-gist-btn">Upload to Gist</button>
+                                    <button id="updateExistingGistBtn" class="update-gist-btn">Update Existing Gist</button>
+                                </div>
                                 <div id="gistResult" class="gist-result" style="display: none;">
-                                    <p>✅ 数据已上传到Gist</p>
-                                    <a id="gistLink" href="#" target="_blank" class="gist-link">查看Gist</a>
+                                    <p>✅ Data uploaded to Gist</p>
+                                    <a id="gistLink" href="#" target="_blank" class="gist-link">View Gist</a>
                                 </div>
                             </div>
                             <div class="sync-option">
-                                <h3>📥 从Gist下载数据</h3>
-                                <p>输入Gist ID或URL来下载数据</p>
+                                <h3>📥 Download Data from Gist</h3>
+                                <p>Enter Gist ID or URL to download data</p>
                                 <div class="gist-config">
-                                    <input type="text" id="gistIdInput" placeholder="Gist ID 或 URL" class="gist-input">
+                                    <input type="text" id="gistIdInput" placeholder="Gist ID or URL" class="gist-input">
                                 </div>
-                                <button id="downloadFromGistBtn" class="download-gist-btn">从Gist下载</button>
+                                <button id="downloadFromGistBtn" class="download-gist-btn">Download from Gist</button>
                                 <div id="downloadResult" class="download-result" style="display: none;">
-                                    <p>✅ 数据已从Gist下载</p>
+                                    <p>✅ Data downloaded from Gist</p>
                                 </div>
                             </div>
                         </div>
                         <div class="gist-help">
-                            <h4>📋 使用说明：</h4>
+                            <h4>📋 Instructions:</h4>
                             <ol>
-                                <li>访问 <a href="https://github.com/settings/tokens" target="_blank">GitHub Token设置</a></li>
-                                <li>生成新的Personal Access Token（选择gist权限）</li>
-                                <li>将Token粘贴到上方输入框</li>
-                                <li>点击"上传到Gist"生成分享链接</li>
-                                <li>在其他设备上使用Gist ID下载数据</li>
+                                <li>Visit <a href="https://github.com/settings/tokens" target="_blank">GitHub Token Settings</a></li>
+                                <li>Generate new Personal Access Token (select gist permission)</li>
+                                <li>Paste token in the input field above</li>
+                                <li>Click "Upload to Gist" to generate share link</li>
+                                <li>Use Gist ID on other devices to download data</li>
                             </ol>
                         </div>
                     </div>

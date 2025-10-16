@@ -81,24 +81,24 @@ function updateLoginStatusDisplay() {
         if (loginStatus) {
             if (remainingHours >= 24) {
                 const days = Math.floor(remainingHours / 24);
-                loginStatus.textContent = `已登录 (${days}天)`;
+                loginStatus.textContent = `Logged In (${days} days)`;
             } else if (remainingHours >= 1) {
-                loginStatus.textContent = `已登录 (${remainingHours}小时)`;
+                loginStatus.textContent = `Logged In (${remainingHours} hours)`;
             } else {
                 const minutes = Math.floor(remainingHours * 60);
-                loginStatus.textContent = `已登录 (${minutes}分钟)`;
+                loginStatus.textContent = `Logged In (${minutes} minutes)`;
             }
         }
         
         if (logoutBtn) {
-            logoutBtn.title = `登录状态剩余 ${remainingHours} 小时`;
+            logoutBtn.title = `Login status remaining ${remainingHours} hours`;
         }
     } else {
         // 登录状态已过期，自动退出
         if (isAuthenticated) {
             clearLoginStatus();
             showPasswordModal();
-            showSuccessMessage('登录状态已过期，请重新登录');
+            showSuccessMessage('Login status expired, please login again');
         }
     }
 }
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // 有有效的登录状态，直接进入系统
         hidePasswordModal();
         await initializeSystem();
-        showSuccessMessage('欢迎回来！登录状态已恢复');
+        showSuccessMessage('Welcome back! Login status restored');
     } else {
         // 没有有效的登录状态，显示密码输入界面
         showPasswordModal();
@@ -208,9 +208,9 @@ function handleLogin() {
         saveLoginStatus();
         hidePasswordModal();
         initializeSystem();
-        showSuccessMessage('登录成功！欢迎使用商品销售系统');
+        showSuccessMessage('Login successful! Welcome to the Product Sales System');
     } else {
-        errorMessage.textContent = '密码错误，请重新输入';
+        errorMessage.textContent = 'Incorrect password, please try again';
         errorMessage.style.display = 'block';
         passwordInput.value = '';
         passwordInput.focus();
@@ -230,7 +230,7 @@ function handleLogout() {
         showPasswordModal();
         document.getElementById('passwordInput').value = '';
         document.getElementById('errorMessage').style.display = 'none';
-        showSuccessMessage('已退出登录');
+        showSuccessMessage('Logged out successfully');
     }
 }
 
@@ -289,7 +289,7 @@ function setupEventListeners() {
         }
     });
 
-    // 导出CSV按钮、GitHub同步按钮、重置数据按钮和测试按钮 - 使用事件委托
+    // Export CSV, GitHub Sync, and Reset Data buttons - using event delegation
     document.addEventListener('click', function(e) {
         if (e.target.id === 'exportBtn') {
             e.preventDefault();
@@ -303,6 +303,10 @@ function setupEventListeners() {
             e.preventDefault();
             e.stopPropagation();
             uploadToGist();
+        } else if (e.target.id === 'updateExistingGistBtn') {
+            e.preventDefault();
+            e.stopPropagation();
+            updateExistingGist();
         } else if (e.target.id === 'downloadFromGistBtn') {
             e.preventDefault();
             e.stopPropagation();
@@ -311,14 +315,10 @@ function setupEventListeners() {
             e.preventDefault();
             e.stopPropagation();
             resetSalesData();
-        } else if (e.target.id === 'testBtn') {
-            e.preventDefault();
-            e.stopPropagation();
-            addTestData();
         }
     });
 
-    // 同步模态框关闭事件
+    // Sync modal close events
     const syncModal = document.getElementById('syncModal');
     const syncCloseBtn = document.querySelector('.sync-close');
     
@@ -363,7 +363,7 @@ function closePaymentModal() {
 // 记录销售
 function recordSale(product, paymentMethod, price) {
     if (!isAuthenticated) {
-        showSuccessMessage('请先登录系统');
+        showSuccessMessage('Please login to the system first');
         return;
     }
     
@@ -436,7 +436,7 @@ function updateSalesDisplay() {
     
     // 如果没有销售记录，显示提示信息
     if (!hasAnySales) {
-        html += '<div class="no-sales-message">暂无销售记录</div>';
+        html += '<div class="no-sales-message">No sales records yet</div>';
     }
     
     salesDisplay.innerHTML = html;
@@ -466,11 +466,11 @@ function loadFromLocalStorage() {
 // 导出CSV文件（从JSON数据导出）
 function exportToCSV() {
     if (!isAuthenticated) {
-        showSuccessMessage('请先登录系统');
+        showSuccessMessage('Please login to the system first');
         return;
     }
     
-    let csvContent = "商品种类,销售数量,销售额\n";
+    let csvContent = "Product Type,Sales Quantity,Sales Amount\n";
     
     Object.keys(salesData).forEach(product => {
         const data = salesData[product];
@@ -510,7 +510,7 @@ function showSuccessMessage(message) {
 // 重置销售数据（清空所有记录）
 function resetSalesData() {
     if (!isAuthenticated) {
-        showSuccessMessage('请先登录系统');
+        showSuccessMessage('Please login to the system first');
         return;
     }
     
@@ -553,10 +553,10 @@ function resetSalesData() {
             updateSalesDisplay();
             console.log('已更新显示');
             
-            showSuccessMessage('销售数据已重置');
+            showSuccessMessage('Sales data has been reset');
         } catch (error) {
             console.error('重置数据时出错:', error);
-            showSuccessMessage('重置数据时出错，请重试');
+            showSuccessMessage('Error resetting data, please try again');
         } finally {
             // 延迟重置处理状态
             setTimeout(() => {
@@ -564,41 +564,6 @@ function resetSalesData() {
             }, 1000);
         }
     }
-}
-
-// 添加测试数据
-function addTestData() {
-    if (!isAuthenticated) {
-        showSuccessMessage('请先登录系统');
-        return;
-    }
-    
-    // 防抖机制
-    if (isProcessing) {
-        return;
-    }
-    
-    const testData = [
-        { product: "Laser Badge", quantity: 2, totalSales: 12 },
-        { product: "fursuit glass", quantity: 1, totalSales: 17 },
-        { product: "collar", quantity: 3, totalSales: 69 },
-        { product: "keychain", quantity: 5, totalSales: 30 }
-    ];
-    
-    testData.forEach(item => {
-        if (!salesData[item.product]) {
-            salesData[item.product] = { quantity: 0, totalSales: 0 };
-        }
-        salesData[item.product].quantity = item.quantity;
-        salesData[item.product].totalSales = item.totalSales;
-    });
-    
-    // 保存到localStorage
-    localStorage.setItem('salesData', JSON.stringify(salesData));
-    
-    // 更新显示
-    updateSalesDisplay();
-    showSuccessMessage('测试数据已添加');
 }
 
 // 显示同步模态框
@@ -617,13 +582,13 @@ function hideSyncModal() {
     }
 }
 
-// 上传数据到GitHub Gist
+// 上传数据到GitHub Gist（创建新Gist）
 async function uploadToGist() {
     const token = document.getElementById('gistToken').value.trim();
     const description = document.getElementById('gistDescription').value.trim() || 'HW Accounting Sales Data';
     
     if (!token) {
-        showSuccessMessage('请输入GitHub Personal Access Token');
+            showSuccessMessage('Please enter GitHub Personal Access Token');
         return;
     }
     
@@ -659,18 +624,83 @@ async function uploadToGist() {
             
             if (resultDiv && linkElement) {
                 linkElement.href = gistUrl;
-                linkElement.textContent = `Gist ID: ${gistId}`;
+                linkElement.textContent = `新Gist ID: ${gistId}`;
                 resultDiv.style.display = 'block';
             }
             
-            showSuccessMessage(`数据已成功上传到Gist！ID: ${gistId}`);
+            // 自动填充现有Gist ID输入框，方便下次更新
+            document.getElementById('existingGistId').value = gistId;
+            
+            showSuccessMessage(`Data successfully uploaded to new Gist! ID: ${gistId}`);
         } else {
             const error = await response.json();
-            throw new Error(error.message || '上传失败');
+            throw new Error(error.message || 'Upload failed');
         }
     } catch (error) {
         console.error('上传到Gist失败:', error);
-        showSuccessMessage(`上传失败: ${error.message}`);
+        showSuccessMessage(`Upload failed: ${error.message}`);
+    }
+}
+
+// 更新现有GitHub Gist
+async function updateExistingGist() {
+    const token = document.getElementById('gistToken').value.trim();
+    const existingGistId = document.getElementById('existingGistId').value.trim();
+    const description = document.getElementById('gistDescription').value.trim() || 'HW Accounting Sales Data';
+    
+    if (!token) {
+            showSuccessMessage('Please enter GitHub Personal Access Token');
+        return;
+    }
+    
+    if (!existingGistId) {
+            showSuccessMessage('Please enter existing Gist ID');
+        return;
+    }
+    
+    try {
+        const gistData = {
+            description: description,
+            files: {
+                'sales_data.json': {
+                    content: JSON.stringify(salesData, null, 2)
+                }
+            }
+        };
+        
+        const response = await fetch(`https://api.github.com/gists/${existingGistId}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(gistData)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            const gistId = result.id;
+            const gistUrl = result.html_url;
+            
+            // 显示结果
+            const resultDiv = document.getElementById('gistResult');
+            const linkElement = document.getElementById('gistLink');
+            
+            if (resultDiv && linkElement) {
+                linkElement.href = gistUrl;
+                linkElement.textContent = `Updated Gist ID: ${gistId}`;
+                resultDiv.style.display = 'block';
+            }
+            
+            showSuccessMessage(`Data successfully updated to Gist! ID: ${gistId}`);
+        } else {
+            const error = await response.json();
+            throw new Error(error.message || 'Update failed');
+        }
+    } catch (error) {
+        console.error('更新Gist失败:', error);
+        showSuccessMessage(`Update failed: ${error.message}`);
     }
 }
 
@@ -679,7 +709,7 @@ async function downloadFromGist() {
     const gistInput = document.getElementById('gistIdInput').value.trim();
     
     if (!gistInput) {
-        showSuccessMessage('请输入Gist ID或URL');
+            showSuccessMessage('Please enter Gist ID or URL');
         return;
     }
     
@@ -715,19 +745,19 @@ async function downloadFromGist() {
                         resultDiv.style.display = 'block';
                     }
                     
-                    showSuccessMessage('数据已成功从Gist下载并加载！');
+                            showSuccessMessage('Data successfully downloaded and loaded from Gist!');
                 } else {
-                    throw new Error('Gist中的文件格式不正确');
+                    throw new Error('Incorrect file format in Gist');
                 }
             } else {
-                throw new Error('Gist中未找到sales_data.json文件');
+                throw new Error('sales_data.json file not found in Gist');
             }
         } else {
             const error = await response.json();
-            throw new Error(error.message || '下载失败');
+            throw new Error(error.message || 'Download failed');
         }
     } catch (error) {
         console.error('从Gist下载失败:', error);
-        showSuccessMessage(`下载失败: ${error.message}`);
+        showSuccessMessage(`Download failed: ${error.message}`);
     }
 }
