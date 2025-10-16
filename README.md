@@ -26,3 +26,33 @@
 1. fork 本repo  
 2. 打开merchList.yaml 把自己要贩售的商品替换进去就可以了  
 3. 在自己的github里面重新publish page或者用别的方法host 服务都可以。[教程详见此处](https://docs.github.com/en/pages/quickstart)
+
+---
+
+# User Guide
+
+## ⚠️ Warning: This tool is completely AI-generated and does not represent my actual coding skills (my real skills are worse)!
+
+## Data Synchronization
+Data synchronization is implemented using gist, requiring manual input of gist id each time for backup. Not suitable for large-scale commercial data synchronization, mainly for temporary booth use at conventions/furry conventions.
+
+Before using, you need to:
+1. Go to settings  
+![Settings](asset/image1.png)
+2. Generate gist token  
+![Settings](asset/image2.png)  
+![Settings](asset/image3.png)  
+![Settings](asset/image4.png)  
+3. Remember this token and NEVER share it!!! Others should generate their own
+and use it in the web tool
+
+## Tool Usage
+1. Other functions are too simple to explain, the interface is already very clear. Mainly talking about synchronization method  
+2. ![Settings](asset/img5.png)  
+After clicking github sync, use the token above to generate a new billing record, which will automatically create a gist repository and generate a gist id
+Please use the same gist id throughout this sales session, so you can also sync across multiple devices. New creation is upload, updates are update
+
+## Changing Sales Content
+1. Fork this repo  
+2. Open merchList.yaml and replace the products you want to sell  
+3. Republish the page in your own github or use other methods to host the service. [Tutorial details here](https://docs.github.com/en/pages/quickstart)

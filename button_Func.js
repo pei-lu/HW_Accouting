@@ -400,7 +400,7 @@ function recordSale(product, paymentMethod, price) {
 // 更新销售记录显示
 function updateSalesDisplay() {
     const salesDisplay = document.getElementById('salesDisplay');
-    let html = '<table class="sales-table"><thead><tr><th>商品名称</th><th>销售数量</th><th>销售额</th></tr></thead><tbody>';
+    let html = '<table class="sales-table"><thead><tr><th>merch name</th><th>number sold</th><th>in come</th></tr></thead><tbody>';
     
     let totalQuantity = 0;
     let totalSales = 0;
