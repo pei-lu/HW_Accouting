@@ -3,6 +3,10 @@
 // 销售数据存储
 let salesData = {};
 
+// 密码验证相关
+const CORRECT_PASSWORD = "Vender2025";
+let isAuthenticated = false;
+
 // 初始化销售数据（优先从localStorage加载，然后从JSON文件）
 async function initializeSalesData() {
     // 首先尝试从localStorage加载数据
@@ -40,10 +44,94 @@ async function initializeSalesData() {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', async function() {
+    showPasswordModal();
+    setupPasswordEventListeners();
+});
+
+// 显示密码模态框
+function showPasswordModal() {
+    const modal = document.getElementById('passwordModal');
+    const mainContainer = document.getElementById('mainContainer');
+    
+    modal.style.display = 'flex';
+    mainContainer.style.display = 'none';
+    
+    // 聚焦到密码输入框
+    setTimeout(() => {
+        document.getElementById('passwordInput').focus();
+    }, 100);
+}
+
+// 隐藏密码模态框并显示主界面
+function hidePasswordModal() {
+    const modal = document.getElementById('passwordModal');
+    const mainContainer = document.getElementById('mainContainer');
+    
+    modal.style.display = 'none';
+    mainContainer.style.display = 'block';
+}
+
+// 设置密码相关事件监听器
+function setupPasswordEventListeners() {
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // 登录按钮点击事件
+    loginBtn.addEventListener('click', handleLogin);
+    
+    // 密码输入框回车事件
+    passwordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    });
+    
+    // 退出登录按钮
+    logoutBtn.addEventListener('click', handleLogout);
+}
+
+// 处理登录
+function handleLogin() {
+    const passwordInput = document.getElementById('passwordInput');
+    const errorMessage = document.getElementById('errorMessage');
+    const enteredPassword = passwordInput.value.trim();
+    
+    if (enteredPassword === CORRECT_PASSWORD) {
+        isAuthenticated = true;
+        hidePasswordModal();
+        initializeSystem();
+        showSuccessMessage('登录成功！欢迎使用商品销售系统');
+    } else {
+        errorMessage.textContent = '密码错误，请重新输入';
+        errorMessage.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+        
+        // 3秒后隐藏错误消息
+        setTimeout(() => {
+            errorMessage.style.display = 'none';
+        }, 3000);
+    }
+}
+
+// 处理退出登录
+function handleLogout() {
+    if (confirm('确定要退出登录吗？')) {
+        isAuthenticated = false;
+        showPasswordModal();
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('errorMessage').style.display = 'none';
+        showSuccessMessage('已退出登录');
+    }
+}
+
+// 初始化系统（登录成功后调用）
+async function initializeSystem() {
     await initializeSalesData();
     setupEventListeners();
     updateSalesDisplay();
-});
+}
 
 // 设置事件监听器
 function setupEventListeners() {
@@ -116,6 +204,11 @@ function closePaymentModal() {
 
 // 记录销售
 function recordSale(product, paymentMethod, price) {
+    if (!isAuthenticated) {
+        showSuccessMessage('请先登录系统');
+        return;
+    }
+    
     if (!salesData[product]) {
         salesData[product] = {
             quantity: 0,
@@ -193,6 +286,11 @@ function loadFromLocalStorage() {
 
 // 导出CSV文件（从JSON数据导出）
 function exportToCSV() {
+    if (!isAuthenticated) {
+        showSuccessMessage('请先登录系统');
+        return;
+    }
+    
     let csvContent = "商品种类,销售数量,销售额\n";
     
     Object.keys(salesData).forEach(product => {
@@ -232,6 +330,11 @@ function showSuccessMessage(message) {
 
 // 重置销售数据（清空所有记录）
 function resetSalesData() {
+    if (!isAuthenticated) {
+        showSuccessMessage('请先登录系统');
+        return;
+    }
+    
     if (confirm('确定要重置所有销售数据吗？此操作不可撤销。')) {
         const products = [
             "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
