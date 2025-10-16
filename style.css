@@ -383,6 +383,16 @@ header p {
     font-weight: bold;
 }
 
+.no-sales-message {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
 .action-buttons {
     display: flex;
     gap: 15px;
@@ -390,7 +400,7 @@ header p {
     margin-top: 20px;
 }
 
-.export-btn, .reset-btn {
+.export-btn, .reset-btn, .test-btn {
     border: none;
     padding: 15px 30px;
     border-radius: 8px;
@@ -404,12 +414,12 @@ header p {
     -ms-user-select: none;
 }
 
-.export-btn:active, .reset-btn:active {
+.export-btn:active, .reset-btn:active, .test-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.export-btn:disabled, .reset-btn:disabled {
+.export-btn:disabled, .reset-btn:disabled, .test-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
@@ -433,6 +443,17 @@ header p {
 
 .reset-btn:hover {
     background: linear-gradient(135deg, #c82333, #dc3545);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.test-btn {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+    color: white;
+}
+
+.test-btn:hover {
+    background: linear-gradient(135deg, #5a32a3, #6f42c1);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }

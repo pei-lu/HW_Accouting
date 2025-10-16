@@ -289,7 +289,7 @@ function setupEventListeners() {
         }
     });
 
-    // 导出CSV按钮和重置数据按钮 - 使用事件委托
+    // 导出CSV按钮、重置数据按钮和测试按钮 - 使用事件委托
     document.addEventListener('click', function(e) {
         if (e.target.id === 'exportBtn') {
             e.preventDefault();
@@ -299,6 +299,10 @@ function setupEventListeners() {
             e.preventDefault();
             e.stopPropagation();
             resetSalesData();
+        } else if (e.target.id === 'testBtn') {
+            e.preventDefault();
+            e.stopPropagation();
+            addTestData();
         }
     });
 }
@@ -310,7 +314,7 @@ function showPaymentModal(product, paypalPrice, cashPrice) {
     const paypalPriceElement = document.getElementById('paypalPrice');
     const cashPriceElement = document.getElementById('cashPrice');
     
-    productTitle.textContent = `选择支付方式 - ${product}`;
+    productTitle.textContent = `${product}`;
     paypalPriceElement.textContent = `$${paypalPrice}`;
     cashPriceElement.textContent = `$${cashPrice}`;
     
@@ -372,33 +376,41 @@ function updateSalesDisplay() {
     
     let totalQuantity = 0;
     let totalSales = 0;
+    let hasAnySales = false;
     
     Object.keys(salesData).forEach(product => {
         const data = salesData[product];
+        html += `<tr>
+            <td>${product}</td>
+            <td>${data.quantity}</td>
+            <td>$${data.totalSales.toFixed(2)}</td>
+        </tr>`;
+        totalQuantity += data.quantity;
+        totalSales += data.totalSales;
+        
         if (data.quantity > 0) {
-            html += `<tr>
-                <td>${product}</td>
-                <td>${data.quantity}</td>
-                <td>$${data.totalSales.toFixed(2)}</td>
-            </tr>`;
-            totalQuantity += data.quantity;
-            totalSales += data.totalSales;
+            hasAnySales = true;
         }
     });
     
     html += '</tbody>';
     
-    if (totalQuantity > 0) {
-        html += `<tfoot>
-            <tr class="total-row">
-                <td><strong>总计</strong></td>
-                <td><strong>${totalQuantity}</strong></td>
-                <td><strong>$${totalSales.toFixed(2)}</strong></td>
-            </tr>
-        </tfoot>`;
-    }
+    // 总是显示总计行，即使所有数据都是0
+    html += `<tfoot>
+        <tr class="total-row">
+            <td><strong>总计</strong></td>
+            <td><strong>${totalQuantity}</strong></td>
+            <td><strong>$${totalSales.toFixed(2)}</strong></td>
+        </tr>
+    </tfoot>`;
     
     html += '</table>';
+    
+    // 如果没有销售记录，显示提示信息
+    if (!hasAnySales) {
+        html += '<div class="no-sales-message">暂无销售记录</div>';
+    }
+    
     salesDisplay.innerHTML = html;
 }
 
@@ -488,6 +500,9 @@ function resetSalesData() {
                 "collar", "collar-wide", "consent Badge", "keychain"
             ];
             
+            console.log('开始重置销售数据...');
+            console.log('重置前的数据:', salesData);
+            
             // 重置内存中的数据
             products.forEach(product => {
                 salesData[product] = {
@@ -496,13 +511,24 @@ function resetSalesData() {
                 };
             });
             
+            console.log('重置后的数据:', salesData);
+            
             // 清除localStorage中的数据
             localStorage.removeItem('salesData');
+            console.log('已清除localStorage中的数据');
             
-            // 重新保存空数据
-            saveToJSON();
+            // 重新保存空数据到localStorage
+            localStorage.setItem('salesData', JSON.stringify(salesData));
+            console.log('已保存空数据到localStorage');
+            
+            // 更新显示
             updateSalesDisplay();
+            console.log('已更新显示');
+            
             showSuccessMessage('销售数据已重置');
+        } catch (error) {
+            console.error('重置数据时出错:', error);
+            showSuccessMessage('重置数据时出错，请重试');
         } finally {
             // 延迟重置处理状态
             setTimeout(() => {
@@ -510,4 +536,39 @@ function resetSalesData() {
             }, 1000);
         }
     }
+}
+
+// 添加测试数据
+function addTestData() {
+    if (!isAuthenticated) {
+        showSuccessMessage('请先登录系统');
+        return;
+    }
+    
+    // 防抖机制
+    if (isProcessing) {
+        return;
+    }
+    
+    const testData = [
+        { product: "Laser Badge", quantity: 2, totalSales: 12 },
+        { product: "fursuit glass", quantity: 1, totalSales: 17 },
+        { product: "collar", quantity: 3, totalSales: 69 },
+        { product: "keychain", quantity: 5, totalSales: 30 }
+    ];
+    
+    testData.forEach(item => {
+        if (!salesData[item.product]) {
+            salesData[item.product] = { quantity: 0, totalSales: 0 };
+        }
+        salesData[item.product].quantity = item.quantity;
+        salesData[item.product].totalSales = item.totalSales;
+    });
+    
+    // 保存到localStorage
+    localStorage.setItem('salesData', JSON.stringify(salesData));
+    
+    // 更新显示
+    updateSalesDisplay();
+    showSuccessMessage('测试数据已添加');
 }
