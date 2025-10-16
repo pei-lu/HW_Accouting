@@ -106,8 +106,53 @@
                 </div>
                 <div class="action-buttons">
                     <button id="exportBtn" class="export-btn">导出CSV</button>
+                    <button id="syncBtn" class="sync-btn">GitHub同步</button>
                     <button id="resetBtn" class="reset-btn">重置数据</button>
                     <button id="testBtn" class="test-btn">测试数据</button>
+                </div>
+                
+                <!-- GitHub Gist同步模态框 -->
+                <div id="syncModal" class="sync-modal">
+                    <div class="sync-modal-content">
+                        <span class="sync-close">&times;</span>
+                        <h2>🔄 GitHub Gist 数据同步</h2>
+                        <div class="sync-options">
+                            <div class="sync-option">
+                                <h3>📤 上传数据到Gist</h3>
+                                <p>将当前销售数据上传到GitHub Gist，生成分享链接</p>
+                                <div class="gist-config">
+                                    <input type="text" id="gistToken" placeholder="GitHub Personal Access Token" class="gist-input">
+                                    <input type="text" id="gistDescription" placeholder="Gist描述 (可选)" class="gist-input">
+                                </div>
+                                <button id="uploadToGistBtn" class="upload-gist-btn">上传到Gist</button>
+                                <div id="gistResult" class="gist-result" style="display: none;">
+                                    <p>✅ 数据已上传到Gist</p>
+                                    <a id="gistLink" href="#" target="_blank" class="gist-link">查看Gist</a>
+                                </div>
+                            </div>
+                            <div class="sync-option">
+                                <h3>📥 从Gist下载数据</h3>
+                                <p>输入Gist ID或URL来下载数据</p>
+                                <div class="gist-config">
+                                    <input type="text" id="gistIdInput" placeholder="Gist ID 或 URL" class="gist-input">
+                                </div>
+                                <button id="downloadFromGistBtn" class="download-gist-btn">从Gist下载</button>
+                                <div id="downloadResult" class="download-result" style="display: none;">
+                                    <p>✅ 数据已从Gist下载</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gist-help">
+                            <h4>📋 使用说明：</h4>
+                            <ol>
+                                <li>访问 <a href="https://github.com/settings/tokens" target="_blank">GitHub Token设置</a></li>
+                                <li>生成新的Personal Access Token（选择gist权限）</li>
+                                <li>将Token粘贴到上方输入框</li>
+                                <li>点击"上传到Gist"生成分享链接</li>
+                                <li>在其他设备上使用Gist ID下载数据</li>
+                            </ol>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

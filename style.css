@@ -400,7 +400,7 @@ header p {
     margin-top: 20px;
 }
 
-.export-btn, .reset-btn, .test-btn {
+.export-btn, .sync-btn, .reset-btn, .test-btn {
     border: none;
     padding: 15px 30px;
     border-radius: 8px;
@@ -414,12 +414,12 @@ header p {
     -ms-user-select: none;
 }
 
-.export-btn:active, .reset-btn:active, .test-btn:active {
+.export-btn:active, .sync-btn:active, .reset-btn:active, .test-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.export-btn:disabled, .reset-btn:disabled, .test-btn:disabled {
+.export-btn:disabled, .sync-btn:disabled, .reset-btn:disabled, .test-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
@@ -456,6 +456,170 @@ header p {
     background: linear-gradient(135deg, #5a32a3, #6f42c1);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.sync-btn {
+    background: linear-gradient(135deg, #24292e, #1a1e22);
+    color: white;
+}
+
+.sync-btn:hover {
+    background: linear-gradient(135deg, #1a1e22, #24292e);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* GitHub Gist同步模态框样式 */
+.sync-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.sync-modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.sync-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+
+.sync-close:hover {
+    color: #000;
+}
+
+.sync-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+.sync-option {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.sync-option h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.sync-option p {
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.gist-config {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.gist-input {
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.gist-input:focus {
+    outline: none;
+    border-color: #24292e;
+    box-shadow: 0 0 0 2px rgba(36, 41, 46, 0.1);
+}
+
+.upload-gist-btn, .download-gist-btn {
+    background: linear-gradient(135deg, #24292e, #1a1e22);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.upload-gist-btn:hover, .download-gist-btn:hover {
+    background: linear-gradient(135deg, #1a1e22, #24292e);
+    transform: translateY(-1px);
+}
+
+.gist-result, .download-result {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.gist-link {
+    color: #24292e;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.gist-link:hover {
+    text-decoration: underline;
+}
+
+.gist-help {
+    background: #e3f2fd;
+    border: 1px solid #bbdefb;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.gist-help h4 {
+    margin-bottom: 10px;
+    color: #1976d2;
+}
+
+.gist-help ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.gist-help li {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.gist-help a {
+    color: #1976d2;
+    text-decoration: none;
+}
+
+.gist-help a:hover {
+    text-decoration: underline;
 }
 
 /* 成功消息样式 */
@@ -541,8 +705,20 @@ header p {
         align-items: center;
     }
     
-    .export-btn, .reset-btn {
+    .export-btn, .sync-btn, .reset-btn, .test-btn {
         width: 100%;
         max-width: 200px;
+    }
+    
+    /* GitHub Gist同步响应式 */
+    .sync-options {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .sync-modal-content {
+        margin: 10% auto;
+        width: 95%;
+        padding: 20px;
     }
 }

@@ -289,12 +289,24 @@ function setupEventListeners() {
         }
     });
 
-    // 导出CSV按钮、重置数据按钮和测试按钮 - 使用事件委托
+    // 导出CSV按钮、GitHub同步按钮、重置数据按钮和测试按钮 - 使用事件委托
     document.addEventListener('click', function(e) {
         if (e.target.id === 'exportBtn') {
             e.preventDefault();
             e.stopPropagation();
             exportToCSV();
+        } else if (e.target.id === 'syncBtn') {
+            e.preventDefault();
+            e.stopPropagation();
+            showSyncModal();
+        } else if (e.target.id === 'uploadToGistBtn') {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadToGist();
+        } else if (e.target.id === 'downloadFromGistBtn') {
+            e.preventDefault();
+            e.stopPropagation();
+            downloadFromGist();
         } else if (e.target.id === 'resetBtn') {
             e.preventDefault();
             e.stopPropagation();
@@ -305,6 +317,22 @@ function setupEventListeners() {
             addTestData();
         }
     });
+
+    // 同步模态框关闭事件
+    const syncModal = document.getElementById('syncModal');
+    const syncCloseBtn = document.querySelector('.sync-close');
+    
+    if (syncCloseBtn) {
+        syncCloseBtn.addEventListener('click', hideSyncModal);
+    }
+    
+    if (syncModal) {
+        window.addEventListener('click', function(e) {
+            if (e.target === syncModal) {
+                hideSyncModal();
+            }
+        });
+    }
 }
 
 // 显示支付方式选择模态框
@@ -571,4 +599,135 @@ function addTestData() {
     // 更新显示
     updateSalesDisplay();
     showSuccessMessage('测试数据已添加');
+}
+
+// 显示同步模态框
+function showSyncModal() {
+    const modal = document.getElementById('syncModal');
+    if (modal) {
+        modal.style.display = 'block';
+    }
+}
+
+// 隐藏同步模态框
+function hideSyncModal() {
+    const modal = document.getElementById('syncModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// 上传数据到GitHub Gist
+async function uploadToGist() {
+    const token = document.getElementById('gistToken').value.trim();
+    const description = document.getElementById('gistDescription').value.trim() || 'HW Accounting Sales Data';
+    
+    if (!token) {
+        showSuccessMessage('请输入GitHub Personal Access Token');
+        return;
+    }
+    
+    try {
+        const gistData = {
+            description: description,
+            public: false,
+            files: {
+                'sales_data.json': {
+                    content: JSON.stringify(salesData, null, 2)
+                }
+            }
+        };
+        
+        const response = await fetch('https://api.github.com/gists', {
+            method: 'POST',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(gistData)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            const gistId = result.id;
+            const gistUrl = result.html_url;
+            
+            // 显示结果
+            const resultDiv = document.getElementById('gistResult');
+            const linkElement = document.getElementById('gistLink');
+            
+            if (resultDiv && linkElement) {
+                linkElement.href = gistUrl;
+                linkElement.textContent = `Gist ID: ${gistId}`;
+                resultDiv.style.display = 'block';
+            }
+            
+            showSuccessMessage(`数据已成功上传到Gist！ID: ${gistId}`);
+        } else {
+            const error = await response.json();
+            throw new Error(error.message || '上传失败');
+        }
+    } catch (error) {
+        console.error('上传到Gist失败:', error);
+        showSuccessMessage(`上传失败: ${error.message}`);
+    }
+}
+
+// 从GitHub Gist下载数据
+async function downloadFromGist() {
+    const gistInput = document.getElementById('gistIdInput').value.trim();
+    
+    if (!gistInput) {
+        showSuccessMessage('请输入Gist ID或URL');
+        return;
+    }
+    
+    try {
+        // 提取Gist ID
+        let gistId = gistInput;
+        if (gistInput.includes('gist.github.com')) {
+            const match = gistInput.match(/gist\.github\.com\/[^\/]+\/([a-f0-9]+)/);
+            if (match) {
+                gistId = match[1];
+            }
+        }
+        
+        const response = await fetch(`https://api.github.com/gists/${gistId}`);
+        
+        if (response.ok) {
+            const gist = await response.json();
+            
+            // 查找sales_data.json文件
+            const salesDataFile = gist.files['sales_data.json'];
+            if (salesDataFile) {
+                const newSalesData = JSON.parse(salesDataFile.content);
+                
+                // 验证数据格式
+                if (typeof newSalesData === 'object' && newSalesData !== null) {
+                    salesData = newSalesData;
+                    saveToJSON();
+                    updateSalesDisplay();
+                    
+                    // 显示结果
+                    const resultDiv = document.getElementById('downloadResult');
+                    if (resultDiv) {
+                        resultDiv.style.display = 'block';
+                    }
+                    
+                    showSuccessMessage('数据已成功从Gist下载并加载！');
+                } else {
+                    throw new Error('Gist中的文件格式不正确');
+                }
+            } else {
+                throw new Error('Gist中未找到sales_data.json文件');
+            }
+        } else {
+            const error = await response.json();
+            throw new Error(error.message || '下载失败');
+        }
+    } catch (error) {
+        console.error('从Gist下载失败:', error);
+        showSuccessMessage(`下载失败: ${error.message}`);
+    }
 }
