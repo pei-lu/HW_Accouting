@@ -10,6 +10,99 @@ let isAuthenticated = false;
 // 防抖机制
 let isProcessing = false;
 
+// 登录状态缓存相关
+const LOGIN_CACHE_KEY = "hw_accounting_login_status";
+const LOGIN_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24小时（毫秒）
+
+// 保存登录状态到缓存
+function saveLoginStatus() {
+    const loginData = {
+        isAuthenticated: true,
+        loginTime: Date.now(),
+        expiresAt: Date.now() + LOGIN_CACHE_DURATION
+    };
+    localStorage.setItem(LOGIN_CACHE_KEY, JSON.stringify(loginData));
+}
+
+// 从缓存加载登录状态
+function loadLoginStatus() {
+    try {
+        const cachedData = localStorage.getItem(LOGIN_CACHE_KEY);
+        if (cachedData) {
+            const loginData = JSON.parse(cachedData);
+            const now = Date.now();
+            
+            // 检查是否在有效期内
+            if (loginData.expiresAt && now < loginData.expiresAt) {
+                isAuthenticated = true;
+                return true;
+            } else {
+                // 过期了，清除缓存
+                clearLoginStatus();
+                return false;
+            }
+        }
+    } catch (error) {
+        console.error('加载登录状态失败:', error);
+        clearLoginStatus();
+    }
+    return false;
+}
+
+// 清除登录状态缓存
+function clearLoginStatus() {
+    localStorage.removeItem(LOGIN_CACHE_KEY);
+    isAuthenticated = false;
+}
+
+// 获取剩余登录时间（小时）
+function getRemainingLoginTime() {
+    try {
+        const cachedData = localStorage.getItem(LOGIN_CACHE_KEY);
+        if (cachedData) {
+            const loginData = JSON.parse(cachedData);
+            const now = Date.now();
+            const remaining = loginData.expiresAt - now;
+            return Math.max(0, Math.floor(remaining / (60 * 60 * 1000))); // 转换为小时
+        }
+    } catch (error) {
+        console.error('获取剩余登录时间失败:', error);
+    }
+    return 0;
+}
+
+// 更新登录状态显示
+function updateLoginStatusDisplay() {
+    const remainingHours = getRemainingLoginTime();
+    const loginStatus = document.getElementById('loginStatus');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    if (remainingHours > 0) {
+        if (loginStatus) {
+            if (remainingHours >= 24) {
+                const days = Math.floor(remainingHours / 24);
+                loginStatus.textContent = `已登录 (${days}天)`;
+            } else if (remainingHours >= 1) {
+                loginStatus.textContent = `已登录 (${remainingHours}小时)`;
+            } else {
+                const minutes = Math.floor(remainingHours * 60);
+                loginStatus.textContent = `已登录 (${minutes}分钟)`;
+            }
+        }
+        
+        if (logoutBtn) {
+            logoutBtn.title = `登录状态剩余 ${remainingHours} 小时`;
+        }
+    } else {
+        // 登录状态已过期，自动退出
+        if (isAuthenticated) {
+            clearLoginStatus();
+            showPasswordModal();
+            showSuccessMessage('登录状态已过期，请重新登录');
+        }
+    }
+}
+
 // 初始化销售数据（优先从localStorage加载，然后从JSON文件）
 async function initializeSalesData() {
     // 首先尝试从localStorage加载数据
@@ -47,7 +140,16 @@ async function initializeSalesData() {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', async function() {
-    showPasswordModal();
+    // 首先检查是否有有效的登录状态缓存
+    if (loadLoginStatus()) {
+        // 有有效的登录状态，直接进入系统
+        hidePasswordModal();
+        await initializeSystem();
+        showSuccessMessage('欢迎回来！登录状态已恢复');
+    } else {
+        // 没有有效的登录状态，显示密码输入界面
+        showPasswordModal();
+    }
     setupPasswordEventListeners();
 });
 
@@ -102,6 +204,8 @@ function handleLogin() {
     
     if (enteredPassword === CORRECT_PASSWORD) {
         isAuthenticated = true;
+        // 保存登录状态到缓存
+        saveLoginStatus();
         hidePasswordModal();
         initializeSystem();
         showSuccessMessage('登录成功！欢迎使用商品销售系统');
@@ -121,7 +225,8 @@ function handleLogin() {
 // 处理退出登录
 function handleLogout() {
     if (confirm('确定要退出登录吗？')) {
-        isAuthenticated = false;
+        // 清除登录状态缓存
+        clearLoginStatus();
         showPasswordModal();
         document.getElementById('passwordInput').value = '';
         document.getElementById('errorMessage').style.display = 'none';
@@ -134,6 +239,10 @@ async function initializeSystem() {
     await initializeSalesData();
     setupEventListeners();
     updateSalesDisplay();
+    updateLoginStatusDisplay();
+    
+    // 每分钟更新一次登录状态显示
+    setInterval(updateLoginStatusDisplay, 60000);
 }
 
 // 设置事件监听器

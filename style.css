@@ -113,6 +113,25 @@ body {
     border: 1px solid #f5c6cb;
 }
 
+/* 登录信息样式 */
+.login-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.login-status {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
 /* 退出登录按钮样式 */
 .logout-btn {
     background: linear-gradient(135deg, #dc3545, #c82333);
@@ -123,7 +142,6 @@ body {
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 10px;
 }
 
 .logout-btn:hover {
