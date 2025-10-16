@@ -1,0 +1,326 @@
+/* 商品销售系统样式 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    color: white;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.products-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.products-section h2 {
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.product-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.product-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+}
+
+.product-btn h3 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+}
+
+.product-btn p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-content h2 {
+    margin-bottom: 25px;
+    color: #333;
+    text-align: center;
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.payment-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.paypal-btn {
+    background: linear-gradient(135deg, #0070ba, #003087);
+    color: white;
+}
+
+.paypal-btn:hover {
+    background: linear-gradient(135deg, #003087, #0070ba);
+    transform: translateY(-2px);
+}
+
+.cash-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.cash-btn:hover {
+    background: linear-gradient(135deg, #20c997, #28a745);
+    transform: translateY(-2px);
+}
+
+.payment-icon {
+    font-size: 1.5rem;
+}
+
+.payment-text {
+    flex: 1;
+    text-align: center;
+}
+
+.payment-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* 销售记录样式 */
+.sales-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.sales-section h2 {
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.sales-table th,
+.sales-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.sales-table th {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-weight: bold;
+}
+
+.sales-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.total-row {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.export-btn, .reset-btn {
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #20c997, #28a745);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.reset-btn:hover {
+    background: linear-gradient(135deg, #c82333, #dc3545);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* 成功消息样式 */
+.success-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1001;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        margin: 10% auto;
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .sales-table {
+        font-size: 0.9rem;
+    }
+    
+    .sales-table th,
+    .sales-table td {
+        padding: 10px 8px;
+    }
+}

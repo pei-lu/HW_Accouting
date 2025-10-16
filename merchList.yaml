@@ -1,0 +1,65 @@
+# 商品信息
+name: "Laser Badge"
+price: 
+  - 6
+  - 5
+payment_methods: 
+  - "paypal"
+  - "cash"
+
+name: "fursuit glass"
+price: 
+  - 17
+  - 15
+payment_methods: 
+  - "paypal"
+  - "cash"
+
+name: "badge standard"
+price: 
+  - 17
+  - 15
+payment_methods: 
+  - "paypal"
+  - "cash"
+
+name: "badge Customize"
+price: 
+  - 17
+  - 15
+payment_methods: 
+  - "paypal"
+  - "cash"
+
+name: "collar"
+price: 
+  - 23
+  - 20
+payment_methods: 
+  - "paypal"
+  - "cash"
+
+name: "collar-wide"
+price: 
+  - 29
+  - 25
+payment_methods: 
+  - "paypal"
+  - "cash"
+
+name: "consent Badge"
+price: 
+  - 6
+  - 5
+payment_methods: 
+  - "paypal"
+  - "cash"
+
+name: "keychain"
+price: 
+  - 6
+  - 5
+payment_methods: 
+  - "paypal"
+  - "cash"
+
