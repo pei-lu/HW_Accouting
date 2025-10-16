@@ -7,6 +7,9 @@ let salesData = {};
 const CORRECT_PASSWORD = "Vender2025";
 let isAuthenticated = false;
 
+// 防抖机制
+let isProcessing = false;
+
 // 初始化销售数据（优先从localStorage加载，然后从JSON文件）
 async function initializeSalesData() {
     // 首先尝试从localStorage加载数据
@@ -135,24 +138,31 @@ async function initializeSystem() {
 
 // 设置事件监听器
 function setupEventListeners() {
-    // 商品按钮点击事件
-    const productButtons = document.querySelectorAll('.product-btn');
-    productButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const product = this.dataset.product;
-            const paypalPrice = parseFloat(this.dataset.paypalPrice);
-            const cashPrice = parseFloat(this.dataset.cashPrice);
+    // 商品按钮点击事件 - 使用事件委托避免重复绑定
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.product-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const button = e.target.closest('.product-btn');
+            const product = button.dataset.product;
+            const paypalPrice = parseFloat(button.dataset.paypalPrice);
+            const cashPrice = parseFloat(button.dataset.cashPrice);
             
             showPaymentModal(product, paypalPrice, cashPrice);
-        });
+        }
     });
 
     // 支付方式按钮点击事件
     document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('payment-btn')) {
-            const method = e.target.dataset.method;
+        if (e.target.closest('.payment-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const button = e.target.closest('.payment-btn');
+            const method = button.dataset.method;
             const product = document.getElementById('selectedProduct').textContent;
-            const price = parseFloat(e.target.querySelector('.payment-price').textContent.replace('$', ''));
+            const price = parseFloat(button.querySelector('.payment-price').textContent.replace('$', ''));
             
             recordSale(product, method, price);
             closePaymentModal();
@@ -170,11 +180,18 @@ function setupEventListeners() {
         }
     });
 
-    // 导出CSV按钮
-    document.getElementById('exportBtn').addEventListener('click', exportToCSV);
-    
-    // 重置数据按钮
-    document.getElementById('resetBtn').addEventListener('click', resetSalesData);
+    // 导出CSV按钮和重置数据按钮 - 使用事件委托
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'exportBtn') {
+            e.preventDefault();
+            e.stopPropagation();
+            exportToCSV();
+        } else if (e.target.id === 'resetBtn') {
+            e.preventDefault();
+            e.stopPropagation();
+            resetSalesData();
+        }
+    });
 }
 
 // 显示支付方式选择模态框
@@ -209,21 +226,34 @@ function recordSale(product, paymentMethod, price) {
         return;
     }
     
-    if (!salesData[product]) {
-        salesData[product] = {
-            quantity: 0,
-            totalSales: 0
-        };
+    // 防抖机制
+    if (isProcessing) {
+        return;
     }
+    isProcessing = true;
     
-    salesData[product].quantity += 1;
-    salesData[product].totalSales += price;
-    
-    updateSalesDisplay();
-    saveToJSON();
-    
-    // 显示成功消息
-    showSuccessMessage(`${product} 销售记录已添加 (${paymentMethod}: $${price})`);
+    try {
+        if (!salesData[product]) {
+            salesData[product] = {
+                quantity: 0,
+                totalSales: 0
+            };
+        }
+        
+        salesData[product].quantity += 1;
+        salesData[product].totalSales += price;
+        
+        updateSalesDisplay();
+        saveToJSON();
+        
+        // 显示成功消息
+        showSuccessMessage(`${product} 销售记录已添加 (${paymentMethod}: $${price})`);
+    } finally {
+        // 延迟重置处理状态，防止快速重复点击
+        setTimeout(() => {
+            isProcessing = false;
+        }, 500);
+    }
 }
 
 // 更新销售记录显示
@@ -335,21 +365,40 @@ function resetSalesData() {
         return;
     }
     
+    // 防抖机制
+    if (isProcessing) {
+        return;
+    }
+    
     if (confirm('确定要重置所有销售数据吗？此操作不可撤销。')) {
-        const products = [
-            "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
-            "collar", "collar-wide", "consent Badge", "keychain"
-        ];
+        isProcessing = true;
         
-        products.forEach(product => {
-            salesData[product] = {
-                quantity: 0,
-                totalSales: 0
-            };
-        });
-        
-        saveToJSON();
-        updateSalesDisplay();
-        showSuccessMessage('销售数据已重置');
+        try {
+            const products = [
+                "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
+                "collar", "collar-wide", "consent Badge", "keychain"
+            ];
+            
+            // 重置内存中的数据
+            products.forEach(product => {
+                salesData[product] = {
+                    quantity: 0,
+                    totalSales: 0
+                };
+            });
+            
+            // 清除localStorage中的数据
+            localStorage.removeItem('salesData');
+            
+            // 重新保存空数据
+            saveToJSON();
+            updateSalesDisplay();
+            showSuccessMessage('销售数据已重置');
+        } finally {
+            // 延迟重置处理状态
+            setTimeout(() => {
+                isProcessing = false;
+            }, 1000);
+        }
     }
 }

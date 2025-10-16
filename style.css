@@ -186,12 +186,27 @@ header p {
     transition: all 0.3s ease;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .product-btn:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+}
+
+.product-btn:active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.product-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .product-btn h3 {
@@ -365,6 +380,21 @@ header p {
     font-size: 1.1rem;
     font-weight: bold;
     transition: all 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.export-btn:active, .reset-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.export-btn:disabled, .reset-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .export-btn {
