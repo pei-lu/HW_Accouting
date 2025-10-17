@@ -63,3 +63,18 @@ payment_methods:
   - "paypal"
   - "cash"
 
+name: "fursuit head base"
+price: 
+  - 100
+  - 80
+payment_methods: 
+  - "paypal"
+  - "cash"
+
+name: "fursuit ear"
+price: 
+  - 35
+  - 30
+payment_methods: 
+  - "paypal"
+  - "cash"  
