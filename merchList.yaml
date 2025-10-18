@@ -25,8 +25,8 @@ payment_methods:
 
 name: "badge Customize"
 price: 
-  - 17
-  - 15
+  - 23
+  - 20
 payment_methods: 
   - "paypal"
   - "cash"
