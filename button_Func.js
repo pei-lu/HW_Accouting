@@ -123,14 +123,18 @@ async function initializeSalesData() {
             // 如果加载失败，使用默认数据
             const products = [
                 "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
-                "collar", "collar-wide", "consent Badge", "keychain"
+                "collar", "collar-wide", "consent Badge", "keychain", "fursuit head base", "fursuit ear"
             ];
             
             products.forEach(product => {
                 if (!salesData[product]) {
                     salesData[product] = {
                         quantity: 0,
-                        totalSales: 0
+                        totalSales: 0,
+                        paypalQuantity: 0,
+                        paypalTotal: 0,
+                        cashQuantity: 0,
+                        cashTotal: 0
                     };
                 }
             });
@@ -377,12 +381,25 @@ function recordSale(product, paymentMethod, price) {
         if (!salesData[product]) {
             salesData[product] = {
                 quantity: 0,
-                totalSales: 0
+                totalSales: 0,
+                paypalQuantity: 0,
+                paypalTotal: 0,
+                cashQuantity: 0,
+                cashTotal: 0
             };
         }
         
         salesData[product].quantity += 1;
         salesData[product].totalSales += price;
+        
+        // Track payment method separately
+        if (paymentMethod === 'paypal') {
+            salesData[product].paypalQuantity += 1;
+            salesData[product].paypalTotal += price;
+        } else if (paymentMethod === 'cash') {
+            salesData[product].cashQuantity += 1;
+            salesData[product].cashTotal += price;
+        }
         
         updateSalesDisplay();
         saveToJSON();
@@ -400,21 +417,40 @@ function recordSale(product, paymentMethod, price) {
 // 更新销售记录显示
 function updateSalesDisplay() {
     const salesDisplay = document.getElementById('salesDisplay');
-    let html = '<table class="sales-table"><thead><tr><th>merch name</th><th>number sold</th><th>in come</th></tr></thead><tbody>';
+    let html = '<table class="sales-table"><thead><tr><th>merch name</th><th>total sold</th><th>PayPal sold</th><th>Cash sold</th><th>total income</th><th>PayPal income</th><th>Cash income</th></tr></thead><tbody>';
     
     let totalQuantity = 0;
     let totalSales = 0;
+    let totalPaypalQuantity = 0;
+    let totalPaypalSales = 0;
+    let totalCashQuantity = 0;
+    let totalCashSales = 0;
     let hasAnySales = false;
     
     Object.keys(salesData).forEach(product => {
         const data = salesData[product];
+        // Ensure all properties exist for backward compatibility
+        const paypalQty = data.paypalQuantity || 0;
+        const paypalTotal = data.paypalTotal || 0;
+        const cashQty = data.cashQuantity || 0;
+        const cashTotal = data.cashTotal || 0;
+        
         html += `<tr>
             <td>${product}</td>
             <td>${data.quantity}</td>
+            <td>${paypalQty}</td>
+            <td>${cashQty}</td>
             <td>$${data.totalSales.toFixed(2)}</td>
+            <td>$${paypalTotal.toFixed(2)}</td>
+            <td>$${cashTotal.toFixed(2)}</td>
         </tr>`;
+        
         totalQuantity += data.quantity;
         totalSales += data.totalSales;
+        totalPaypalQuantity += paypalQty;
+        totalPaypalSales += paypalTotal;
+        totalCashQuantity += cashQty;
+        totalCashSales += cashTotal;
         
         if (data.quantity > 0) {
             hasAnySales = true;
@@ -428,7 +464,11 @@ function updateSalesDisplay() {
         <tr class="total-row">
             <td><strong>总计</strong></td>
             <td><strong>${totalQuantity}</strong></td>
+            <td><strong>${totalPaypalQuantity}</strong></td>
+            <td><strong>${totalCashQuantity}</strong></td>
             <td><strong>$${totalSales.toFixed(2)}</strong></td>
+            <td><strong>$${totalPaypalSales.toFixed(2)}</strong></td>
+            <td><strong>$${totalCashSales.toFixed(2)}</strong></td>
         </tr>
     </tfoot>`;
     
@@ -470,11 +510,16 @@ function exportToCSV() {
         return;
     }
     
-    let csvContent = "Product Type,Sales Quantity,Sales Amount\n";
+    let csvContent = "Product Type,Total Quantity,PayPal Quantity,Cash Quantity,Total Sales,PayPal Sales,Cash Sales\n";
     
     Object.keys(salesData).forEach(product => {
         const data = salesData[product];
-        csvContent += `${product},${data.quantity},${data.totalSales.toFixed(2)}\n`;
+        const paypalQty = data.paypalQuantity || 0;
+        const paypalTotal = data.paypalTotal || 0;
+        const cashQty = data.cashQuantity || 0;
+        const cashTotal = data.cashTotal || 0;
+        
+        csvContent += `${product},${data.quantity},${paypalQty},${cashQty},${data.totalSales.toFixed(2)},${paypalTotal.toFixed(2)},${cashTotal.toFixed(2)}\n`;
     });
     
     // 创建CSV文件并下载
@@ -525,7 +570,7 @@ function resetSalesData() {
         try {
             const products = [
                 "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
-                "collar", "collar-wide", "consent Badge", "keychain"
+                "collar", "collar-wide", "consent Badge", "keychain", "fursuit head base", "fursuit ear"
             ];
             
             console.log('开始重置销售数据...');
@@ -535,7 +580,11 @@ function resetSalesData() {
             products.forEach(product => {
                 salesData[product] = {
                     quantity: 0,
-                    totalSales: 0
+                    totalSales: 0,
+                    paypalQuantity: 0,
+                    paypalTotal: 0,
+                    cashQuantity: 0,
+                    cashTotal: 0
                 };
             });
             
