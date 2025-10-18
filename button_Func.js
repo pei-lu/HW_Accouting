@@ -103,6 +103,41 @@ function updateLoginStatusDisplay() {
     }
 }
 
+// 数据迁移函数 - 将旧格式数据转换为新格式
+function migrateDataToNewFormat(data) {
+    const migratedData = {};
+    const products = [
+        "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
+        "collar", "collar-wide", "consent Badge", "keychain", "fursuit head base", "fursuit ear"
+    ];
+    
+    products.forEach(product => {
+        if (data[product]) {
+            // 如果数据存在，迁移到新格式
+            migratedData[product] = {
+                quantity: data[product].quantity || 0,
+                totalSales: data[product].totalSales || 0,
+                paypalQuantity: data[product].paypalQuantity || 0,
+                paypalTotal: data[product].paypalTotal || 0,
+                cashQuantity: data[product].cashQuantity || 0,
+                cashTotal: data[product].cashTotal || 0
+            };
+        } else {
+            // 如果数据不存在，创建新的空记录
+            migratedData[product] = {
+                quantity: 0,
+                totalSales: 0,
+                paypalQuantity: 0,
+                paypalTotal: 0,
+                cashQuantity: 0,
+                cashTotal: 0
+            };
+        }
+    });
+    
+    return migratedData;
+}
+
 // 初始化销售数据（优先从localStorage加载，然后从JSON文件）
 async function initializeSalesData() {
     // 首先尝试从localStorage加载数据
@@ -113,8 +148,10 @@ async function initializeSalesData() {
         try {
             const response = await fetch('sales_data.json');
             if (response.ok) {
-                salesData = await response.json();
-                console.log('销售数据已从JSON文件加载');
+                const rawData = await response.json();
+                // 迁移数据到新格式
+                salesData = migrateDataToNewFormat(rawData);
+                console.log('销售数据已从JSON文件加载并迁移到新格式');
             } else {
                 throw new Error('无法加载JSON文件');
             }
@@ -139,6 +176,10 @@ async function initializeSalesData() {
                 }
             });
         }
+    } else {
+        // 如果localStorage有数据，也需要迁移到新格式
+        salesData = migrateDataToNewFormat(salesData);
+        console.log('localStorage数据已迁移到新格式');
     }
 }
 

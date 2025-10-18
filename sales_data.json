@@ -1,34 +1,82 @@
 {
   "Laser Badge": {
     "quantity": 0,
-    "totalSales": 0.00
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
   },
   "fursuit glass": {
     "quantity": 0,
-    "totalSales": 0.00
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
   },
   "badge standard": {
     "quantity": 0,
-    "totalSales": 0.00
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
   },
   "badge Customize": {
     "quantity": 0,
-    "totalSales": 0.00
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
   },
   "collar": {
     "quantity": 0,
-    "totalSales": 0.00
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
   },
   "collar-wide": {
     "quantity": 0,
-    "totalSales": 0.00
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
   },
   "consent Badge": {
     "quantity": 0,
-    "totalSales": 0.00
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
   },
   "keychain": {
     "quantity": 0,
-    "totalSales": 0.00
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
+  },
+  "fursuit head base": {
+    "quantity": 0,
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
+  },
+  "fursuit ear": {
+    "quantity": 0,
+    "totalSales": 0.00,
+    "paypalQuantity": 0,
+    "paypalTotal": 0.00,
+    "cashQuantity": 0,
+    "cashTotal": 0.00
   }
 }
