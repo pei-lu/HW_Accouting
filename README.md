@@ -24,7 +24,7 @@
 
 ## 贩售内容更换
 1. fork 本repo  
-2. 打开merchList.yaml 把自己要贩售的商品替换进去就可以了  
+2. 打开merchList.json 把自己要贩售的商品替换进去就可以了  
 3. 在自己的github里面重新publish page或者用别的方法host 服务都可以。[教程详见此处](https://docs.github.com/en/pages/quickstart)
 
 ---
@@ -54,5 +54,5 @@ Please use the same gist id throughout this sales session, so you can also sync 
 
 ## Changing Sales Content
 1. Fork this repo  
-2. Open merchList.yaml and replace the products you want to sell  
-3. Republish the page in your own github or use other methods to host the service. [Tutorial details here](https://docs.github.com/en/pages/quickstart)
+2. Open merchList.json and replace the products you want to sell  
+4. Republish the page in your own github or use other methods to host the service. [Tutorial details here](https://docs.github.com/en/pages/quickstart)
