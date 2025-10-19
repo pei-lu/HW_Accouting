@@ -60,5 +60,11 @@
       "cashPrice": 30,
       "paymentMethods": ["paypal", "cash"]
     }
+    {
+      "name": "fursuit eyes",
+      "paypalPrice": 312,
+      "cashPrice": 35,
+      "paymentMethods": ["paypal", "cash"]
+    }
   ]
 }
