@@ -1,0 +1,64 @@
+{
+  "products": [
+    {
+      "name": "Laser Badge",
+      "paypalPrice": 6,
+      "cashPrice": 5,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "fursuit glass",
+      "paypalPrice": 17,
+      "cashPrice": 15,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "badge standard",
+      "paypalPrice": 17,
+      "cashPrice": 15,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "badge Customize",
+      "paypalPrice": 17,
+      "cashPrice": 15,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "collar",
+      "paypalPrice": 23,
+      "cashPrice": 20,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "collar-wide",
+      "paypalPrice": 29,
+      "cashPrice": 25,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "consent Badge",
+      "paypalPrice": 6,
+      "cashPrice": 5,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "keychain",
+      "paypalPrice": 6,
+      "cashPrice": 5,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "fursuit head base",
+      "paypalPrice": 100,
+      "cashPrice": 80,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "fursuit ear",
+      "paypalPrice": 35,
+      "cashPrice": 30,
+      "paymentMethods": ["paypal", "cash"]
+    }
+  ]
+}

@@ -3,6 +3,9 @@
 // 销售数据存储
 let salesData = {};
 
+// 商品配置数据
+let productConfig = [];
+
 // 密码验证相关
 const CORRECT_PASSWORD = "Vender2025";
 let isAuthenticated = false;
@@ -103,28 +106,87 @@ function updateLoginStatusDisplay() {
     }
 }
 
+// 加载商品配置
+async function loadProductConfig() {
+    try {
+        const response = await fetch('merchList.json');
+        if (response.ok) {
+            const config = await response.json();
+            productConfig = config.products;
+            console.log('商品配置已加载:', productConfig);
+            return true;
+        } else {
+            throw new Error('无法加载商品配置文件');
+        }
+    } catch (error) {
+        console.error('加载商品配置失败:', error);
+        // 使用默认配置作为后备
+        productConfig = [
+            { name: "Laser Badge", paypalPrice: 6, cashPrice: 5, paymentMethods: ["paypal", "cash"] },
+            { name: "fursuit glass", paypalPrice: 17, cashPrice: 15, paymentMethods: ["paypal", "cash"] },
+            { name: "badge standard", paypalPrice: 17, cashPrice: 15, paymentMethods: ["paypal", "cash"] },
+            { name: "badge Customize", paypalPrice: 17, cashPrice: 15, paymentMethods: ["paypal", "cash"] },
+            { name: "collar", paypalPrice: 23, cashPrice: 20, paymentMethods: ["paypal", "cash"] },
+            { name: "collar-wide", paypalPrice: 29, cashPrice: 25, paymentMethods: ["paypal", "cash"] },
+            { name: "consent Badge", paypalPrice: 6, cashPrice: 5, paymentMethods: ["paypal", "cash"] },
+            { name: "keychain", paypalPrice: 6, cashPrice: 5, paymentMethods: ["paypal", "cash"] },
+            { name: "fursuit head base", paypalPrice: 100, cashPrice: 80, paymentMethods: ["paypal", "cash"] },
+            { name: "fursuit ear", paypalPrice: 35, cashPrice: 30, paymentMethods: ["paypal", "cash"] }
+        ];
+        return false;
+    }
+}
+
+// 动态生成商品按钮
+function generateProductButtons() {
+    const productsGrid = document.querySelector('.products-grid');
+    if (!productsGrid) {
+        console.error('找不到商品网格容器');
+        return;
+    }
+    
+    // 清空现有按钮
+    productsGrid.innerHTML = '';
+    
+    // 根据配置生成按钮
+    productConfig.forEach(product => {
+        const button = document.createElement('button');
+        button.className = 'product-btn';
+        button.setAttribute('data-product', product.name);
+        button.setAttribute('data-paypal-price', product.paypalPrice);
+        button.setAttribute('data-cash-price', product.cashPrice);
+        
+        button.innerHTML = `
+            <h3>${product.name}</h3>
+            <p>PayPal: $${product.paypalPrice} | Cash: $${product.cashPrice}</p>
+        `;
+        
+        productsGrid.appendChild(button);
+    });
+    
+    console.log('商品按钮已动态生成');
+}
+
 // 数据迁移函数 - 将旧格式数据转换为新格式
 function migrateDataToNewFormat(data) {
     const migratedData = {};
-    const products = [
-        "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
-        "collar", "collar-wide", "consent Badge", "keychain", "fursuit head base", "fursuit ear"
-    ];
     
-    products.forEach(product => {
-        if (data[product]) {
+    // 使用动态加载的商品配置
+    productConfig.forEach(product => {
+        const productName = product.name;
+        if (data[productName]) {
             // 如果数据存在，迁移到新格式
-            migratedData[product] = {
-                quantity: data[product].quantity || 0,
-                totalSales: data[product].totalSales || 0,
-                paypalQuantity: data[product].paypalQuantity || 0,
-                paypalTotal: data[product].paypalTotal || 0,
-                cashQuantity: data[product].cashQuantity || 0,
-                cashTotal: data[product].cashTotal || 0
+            migratedData[productName] = {
+                quantity: data[productName].quantity || 0,
+                totalSales: data[productName].totalSales || 0,
+                paypalQuantity: data[productName].paypalQuantity || 0,
+                paypalTotal: data[productName].paypalTotal || 0,
+                cashQuantity: data[productName].cashQuantity || 0,
+                cashTotal: data[productName].cashTotal || 0
             };
         } else {
             // 如果数据不存在，创建新的空记录
-            migratedData[product] = {
+            migratedData[productName] = {
                 quantity: 0,
                 totalSales: 0,
                 paypalQuantity: 0,
@@ -157,15 +219,10 @@ async function initializeSalesData() {
             }
         } catch (error) {
             console.error('加载JSON文件失败:', error);
-            // 如果加载失败，使用默认数据
-            const products = [
-                "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
-                "collar", "collar-wide", "consent Badge", "keychain", "fursuit head base", "fursuit ear"
-            ];
-            
-            products.forEach(product => {
-                if (!salesData[product]) {
-                    salesData[product] = {
+            // 如果加载失败，使用动态商品配置
+            productConfig.forEach(product => {
+                if (!salesData[product.name]) {
+                    salesData[product.name] = {
                         quantity: 0,
                         totalSales: 0,
                         paypalQuantity: 0,
@@ -281,6 +338,13 @@ function handleLogout() {
 
 // 初始化系统（登录成功后调用）
 async function initializeSystem() {
+    // 先加载商品配置
+    await loadProductConfig();
+    
+    // 生成商品按钮
+    generateProductButtons();
+    
+    // 然后初始化销售数据
     await initializeSalesData();
     setupEventListeners();
     updateSalesDisplay();
@@ -609,17 +673,12 @@ function resetSalesData() {
         isProcessing = true;
         
         try {
-            const products = [
-                "Laser Badge", "fursuit glass", "badge standard", "badge Customize",
-                "collar", "collar-wide", "consent Badge", "keychain", "fursuit head base", "fursuit ear"
-            ];
-            
             console.log('开始重置销售数据...');
             console.log('重置前的数据:', salesData);
             
-            // 重置内存中的数据
-            products.forEach(product => {
-                salesData[product] = {
+            // 重置内存中的数据 - 使用动态商品配置
+            productConfig.forEach(product => {
+                salesData[product.name] = {
                     quantity: 0,
                     totalSales: 0,
                     paypalQuantity: 0,
