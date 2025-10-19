@@ -61,3 +61,9 @@ Please use the same gist id throughout this sales session, so you can also sync 
 1. Fork this repo  
 2. Open merchList.json and replace the products you want to sell  
 4. Republish the page in your own github or use other methods to host the service. [Tutorial details here](https://docs.github.com/en/pages/quickstart)
+
+## Password Change
+1. Open the button_Func.js file
+2. Find line 13: const CORRECT_PASSWORD = "Vender2025";
+3. Replace "Vender2025" with your desired new password
+4. Save the file
