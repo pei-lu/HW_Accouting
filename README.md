@@ -27,6 +27,11 @@
 2. 打开merchList.json 把自己要贩售的商品替换进去就可以了  
 3. 在自己的github里面重新publish page或者用别的方法host 服务都可以。[教程详见此处](https://docs.github.com/en/pages/quickstart)
 
+## 密码更改
+1. 打开 button_Func.js 文件  
+2. 找到第13行：const CORRECT_PASSWORD = "Vender2025";  
+3. 将 "Vender2025" 替换为您想要的新密码  
+4. 保存文件
 ---
 
 # User Guide
