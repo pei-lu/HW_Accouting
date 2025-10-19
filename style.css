@@ -400,7 +400,7 @@ header p {
     margin-top: 20px;
 }
 
-.export-btn, .sync-btn, .reset-btn, .test-btn {
+.export-btn, .sync-btn, .reset-btn, .test-btn, .undo-btn {
     border: none;
     padding: 15px 30px;
     border-radius: 8px;
@@ -414,15 +414,32 @@ header p {
     -ms-user-select: none;
 }
 
-.export-btn:active, .sync-btn:active, .reset-btn:active, .test-btn:active {
+.export-btn:active, .sync-btn:active, .reset-btn:active, .test-btn:active, .undo-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.export-btn:disabled, .sync-btn:disabled, .reset-btn:disabled, .test-btn:disabled {
+.export-btn:disabled, .sync-btn:disabled, .reset-btn:disabled, .test-btn:disabled, .undo-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+}
+
+.undo-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    margin-right: 10px;
+}
+
+.undo-btn:hover {
+    background: linear-gradient(135deg, #ff5252, #e53935);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+.undo-btn:disabled {
+    background: linear-gradient(135deg, #ccc, #999);
+    color: #666;
 }
 
 .export-btn {
@@ -720,7 +737,7 @@ header p {
         align-items: center;
     }
     
-    .export-btn, .sync-btn, .reset-btn, .test-btn {
+    .export-btn, .sync-btn, .reset-btn, .test-btn, .undo-btn {
         width: 100%;
         max-width: 200px;
     }

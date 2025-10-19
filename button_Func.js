@@ -6,6 +6,9 @@ let salesData = {};
 // 商品配置数据
 let productConfig = [];
 
+// 销售历史记录（用于撤回功能）
+let salesHistory = [];
+
 // 密码验证相关
 const CORRECT_PASSWORD = "Vender2025";
 let isAuthenticated = false;
@@ -109,17 +112,26 @@ function updateLoginStatusDisplay() {
 // 加载商品配置
 async function loadProductConfig() {
     try {
+        console.log('开始加载商品配置...');
         const response = await fetch('merchList.json');
         if (response.ok) {
             const config = await response.json();
+            
+            // 验证JSON结构
+            if (!config.products || !Array.isArray(config.products)) {
+                throw new Error('JSON文件格式错误：缺少products数组');
+            }
+            
             productConfig = config.products;
-            console.log('商品配置已加载:', productConfig);
+            console.log(`商品配置已从JSON文件加载，共 ${productConfig.length} 个产品:`, productConfig);
             return true;
         } else {
-            throw new Error('无法加载商品配置文件');
+            throw new Error(`HTTP错误: ${response.status} ${response.statusText}`);
         }
     } catch (error) {
         console.error('加载商品配置失败:', error);
+        console.log('使用默认配置作为后备方案');
+        
         // 使用默认配置作为后备
         productConfig = [
             { name: "Laser Badge", paypalPrice: 6, cashPrice: 5, paymentMethods: ["paypal", "cash"] },
@@ -145,11 +157,23 @@ function generateProductButtons() {
         return;
     }
     
+    // 检查商品配置是否已加载
+    if (!productConfig || productConfig.length === 0) {
+        console.error('商品配置未加载或为空');
+        return;
+    }
+    
     // 清空现有按钮
     productsGrid.innerHTML = '';
     
     // 根据配置生成按钮
-    productConfig.forEach(product => {
+    productConfig.forEach((product, index) => {
+        // 验证产品数据完整性
+        if (!product.name || product.paypalPrice === undefined || product.cashPrice === undefined) {
+            console.warn(`产品 ${index + 1} 数据不完整，跳过:`, product);
+            return;
+        }
+        
         const button = document.createElement('button');
         button.className = 'product-btn';
         button.setAttribute('data-product', product.name);
@@ -164,7 +188,78 @@ function generateProductButtons() {
         productsGrid.appendChild(button);
     });
     
-    console.log('商品按钮已动态生成');
+    console.log(`商品按钮已动态生成，共 ${productConfig.length} 个产品`);
+}
+
+// 撤回上一次销售记录
+function undoLastSale() {
+    if (!isAuthenticated) {
+        showSuccessMessage('Please login to the system first');
+        return;
+    }
+    
+    // 防抖机制
+    if (isProcessing) {
+        return;
+    }
+    
+    if (salesHistory.length === 0) {
+        showSuccessMessage('No sales to undo');
+        return;
+    }
+    
+    if (confirm('确定要撤回上一次销售记录吗？')) {
+        isProcessing = true;
+        
+        try {
+            // 获取最后一次销售记录
+            const lastSale = salesHistory.pop();
+            
+            // 恢复到之前的状态
+            salesData = lastSale.previousState;
+            
+            // 更新显示
+            updateSalesDisplay();
+            updateUndoButtonState();
+            saveToJSON();
+            
+            showSuccessMessage(`已撤回 ${lastSale.product} 的销售记录 (${lastSale.paymentMethod}: $${lastSale.price})`);
+        } catch (error) {
+            console.error('撤回操作失败:', error);
+            showSuccessMessage('撤回操作失败，请重试');
+        } finally {
+            setTimeout(() => {
+                isProcessing = false;
+            }, 500);
+        }
+    }
+}
+
+// 更新撤回按钮状态
+function updateUndoButtonState() {
+    const undoBtn = document.getElementById('undoBtn');
+    if (undoBtn) {
+        if (salesHistory.length === 0) {
+            undoBtn.disabled = true;
+            undoBtn.textContent = '↩️ No Sales to Undo';
+        } else {
+            undoBtn.disabled = false;
+            undoBtn.textContent = '↩️ Undo Last Sale';
+        }
+    }
+}
+
+// 刷新商品配置（用于重新加载JSON文件）
+async function refreshProductConfig() {
+    console.log('刷新商品配置...');
+    const configLoaded = await loadProductConfig();
+    generateProductButtons();
+    
+    if (configLoaded) {
+        showSuccessMessage('Product configuration refreshed successfully');
+    } else {
+        showSuccessMessage('Failed to refresh configuration, using fallback');
+    }
 }
 
 // 数据迁移函数 - 将旧格式数据转换为新格式
@@ -339,15 +434,21 @@ function handleLogout() {
 // 初始化系统（登录成功后调用）
 async function initializeSystem() {
     // 先加载商品配置
-    await loadProductConfig();
+    const configLoaded = await loadProductConfig();
     
     // 生成商品按钮
     generateProductButtons();
+    
+    // 如果配置加载失败，显示警告
+    if (!configLoaded) {
+        showSuccessMessage('Warning: Using fallback product configuration. Please check merchList.json file.');
+    }
     
     // 然后初始化销售数据
     await initializeSalesData();
     setupEventListeners();
     updateSalesDisplay();
+    updateUndoButtonState();
     updateLoginStatusDisplay();
     
     // 每分钟更新一次登录状态显示
@@ -398,9 +499,13 @@ function setupEventListeners() {
         }
     });
 
-    // Export CSV, GitHub Sync, and Reset Data buttons - using event delegation
+    // Export CSV, GitHub Sync, Reset Data, and Undo buttons - using event delegation
     document.addEventListener('click', function(e) {
-        if (e.target.id === 'exportBtn') {
+        if (e.target.id === 'undoBtn') {
+            e.preventDefault();
+            e.stopPropagation();
+            undoLastSale();
+        } else if (e.target.id === 'exportBtn') {
             e.preventDefault();
             e.stopPropagation();
             exportToCSV();
@@ -483,6 +588,21 @@ function recordSale(product, paymentMethod, price) {
     isProcessing = true;
     
     try {
+        // 保存当前状态到历史记录（用于撤回）
+        const currentState = JSON.parse(JSON.stringify(salesData));
+        salesHistory.push({
+            timestamp: new Date().toISOString(),
+            product: product,
+            paymentMethod: paymentMethod,
+            price: price,
+            previousState: currentState
+        });
+        
+        // 限制历史记录数量（最多保存50条）
+        if (salesHistory.length > 50) {
+            salesHistory.shift();
+        }
+        
         if (!salesData[product]) {
             salesData[product] = {
                 quantity: 0,
@@ -507,6 +627,7 @@ function recordSale(product, paymentMethod, price) {
         }
         
         updateSalesDisplay();
+        updateUndoButtonState();
         saveToJSON();
         
         // 显示成功消息
@@ -688,6 +809,9 @@ function resetSalesData() {
                 };
             });
             
+            // 清空销售历史记录
+            salesHistory = [];
+            
             console.log('重置后的数据:', salesData);
             
             // 清除localStorage中的数据
@@ -700,6 +824,7 @@ function resetSalesData() {
             
             // 更新显示
             updateSalesDisplay();
+            updateUndoButtonState();
             console.log('已更新显示');
             
             showSuccessMessage('Sales data has been reset');
