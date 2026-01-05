@@ -2,68 +2,68 @@
   "products": [
     {
       "name": "Laser Badge",
-      "paypalPrice": 6,
-      "cashPrice": 5,
+      "paypalPrice": 10,
+      "cashPrice": 10,
       "paymentMethods": ["paypal", "cash"]
     },
     {
       "name": "fursuit glass",
-      "paypalPrice": 17,
+      "paypalPrice": 15,
       "cashPrice": 15,
       "paymentMethods": ["paypal", "cash"]
     },
     {
       "name": "badge standard",
-      "paypalPrice": 17,
-      "cashPrice": 15,
-      "paymentMethods": ["paypal", "cash"]
-    },
-    {
-      "name": "badge Customize",
-      "paypalPrice": 17,
-      "cashPrice": 15,
-      "paymentMethods": ["paypal", "cash"]
-    },
-    {
-      "name": "collar",
-      "paypalPrice": 23,
+      "paypalPrice": 20,
       "cashPrice": 20,
       "paymentMethods": ["paypal", "cash"]
     },
     {
-      "name": "collar-wide",
-      "paypalPrice": 29,
+      "name": "badge Customize",
+      "paypalPrice": 25,
       "cashPrice": 25,
       "paymentMethods": ["paypal", "cash"]
     },
     {
-      "name": "consent Badge",
-      "paypalPrice": 6,
-      "cashPrice": 5,
+      "name": "collar",
+      "paypalPrice": 20,
+      "cashPrice": 20,
       "paymentMethods": ["paypal", "cash"]
     },
     {
-      "name": "keychain",
-      "paypalPrice": 6,
+      "name": "consent Badge",
+      "paypalPrice": 5,
       "cashPrice": 5,
       "paymentMethods": ["paypal", "cash"]
     },
     {
       "name": "fursuit head base",
       "paypalPrice": 100,
-      "cashPrice": 80,
+      "cashPrice": 100,
       "paymentMethods": ["paypal", "cash"]
     },
     {
       "name": "fursuit ear",
-      "paypalPrice": 35,
+      "paypalPrice": 30,
       "cashPrice": 30,
       "paymentMethods": ["paypal", "cash"]
     },
     {
       "name": "fursuit eyes",
-      "paypalPrice": 312,
+      "paypalPrice": 35,
       "cashPrice": 35,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "fursuit head",
+      "paypalPrice": 500,
+      "cashPrice": 500,
+      "paymentMethods": ["paypal", "cash"]
+    },
+    {
+      "name": "兽装配饰",
+      "paypalPrice": 500,
+      "cashPrice": 500,
       "paymentMethods": ["paypal", "cash"]
     }
   ]
