@@ -49,9 +49,9 @@
       "paymentMethods": ["paypal", "cash"]
     },
     {
-      "name": "fursuit eyes",
-      "paypalPrice": 35,
-      "cashPrice": 35,
+      "name": "E-fursuit eyes",
+      "paypalPrice": 50,
+      "cashPrice": 50,
       "paymentMethods": ["paypal", "cash"]
     },
     {
@@ -61,9 +61,9 @@
       "paymentMethods": ["paypal", "cash"]
     },
     {
-      "name": "兽装配饰",
-      "paypalPrice": 500,
-      "cashPrice": 500,
+      "name": "fursuit juwelry",
+      "paypalPrice": 30,
+      "cashPrice": 30,
       "paymentMethods": ["paypal", "cash"]
     }
   ]

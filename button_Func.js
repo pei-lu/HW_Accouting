@@ -182,7 +182,7 @@ function generateProductButtons() {
         
         button.innerHTML = `
             <h3>${product.name}</h3>
-            <p>PayPal: $${product.paypalPrice} | Cash: $${product.cashPrice}</p>
+            <p>$${product.cashPrice}</p>
         `;
         
         productsGrid.appendChild(button);
