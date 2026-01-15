@@ -2,8 +2,8 @@
   "products": [
     {
       "name": "Laser Badge",
-      "paypalPrice": 10,
-      "cashPrice": 10,
+      "paypalPrice": 15,
+      "cashPrice": 15,
       "paymentMethods": ["paypal", "cash"]
     },
     {
